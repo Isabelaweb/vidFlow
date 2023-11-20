@@ -13,6 +13,7 @@ async function buscaEmostraVideos() {
                         <img class="img-canal" src="${video.imagem} alt="Logo do canal"/>
                         <h3 class="titulo-video"> ${video.titulo}</h3>
                         <p class="titulo-canal"> ${video.descricao} </p>
+                        <p class= "categoria" hidden > ${video.categoria} </p>
                     </div> 
                 </li> `
         })
@@ -30,25 +31,33 @@ const barraPesquisa = document.querySelector(".pesquisar__input");
 
 barraPesquisa.addEventListener("input", filtrarPesquisa);
 
+
+
 function filtrarPesquisa() {
     const videos = document.querySelectorAll(".videos__item");
+    const valorFiltro = barraPesquisa.value.toLowerCase();
 
-    if (barraPesquisa.value != "") {
 
-        for (let video of videos) {
-            let titulo = video.querySelector(".titulo-video")?.textContent?.toLowerCase();
-            console.log("Acho que o erro é aqui ")
-            let valorFiltro = barraPesquisa.value.toLowerCase();
+    videos.forEach((video) => {
+        const titulo = video.querySelector(".titulo-video")?.textContent?.toLowerCase();
+        video.style.display = valorFiltro ? titulo.includes(valorFiltro) ? 'block' : 'none' : 'block';
+  });
+}
+    
 
-            // Se o titulo do video não é o valor que a pessoa está pesquisando, esconde o vídeo.
-            if (!titulo.includes(valorFiltro)) {
-                video.style.display = "none";
-                // Se o titulo do video e a pesquisa forem iquais, exibe o vídeo.
-            } else {
-                video.style.display = "block";
-            }
-        }
-    } else {
-        videos.style.display = "block"
-    }
+
+const botaoCategoria = document.querySelectorAll(".superior__item");
+botaoCategoria.forEach((botao) => {
+    let nomeCategoria = botao.getAttribute("name");
+    botao.addEventListener("click", () => filtrarPorCategoria(nomeCategoria))
+})
+
+function filtrarPorCategoria(filtro){
+    const videos = document.querySelectorAll(".videos__item");
+    let valorFiltro = filtro.toLocaleLowerCase();
+    
+    videos.forEach((video) => {
+        let categoria = video.querySelector(".categoria").textContent.toLocaleLowerCase();
+        video.style.display = !categoria.includes(valorFiltro) && valorFiltro != "tudo" ? "none" : "block";
+    }) 
 }
